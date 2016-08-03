@@ -66,11 +66,12 @@ exports.testParticipant = testParticipant = (state, name, options = {}) ->
       definitions = []
 
       onDiscovery = (msg) ->
-        def = msg.data
-        definitions.push def
-        state.broker.ackMessage msg
-        if typeof onParticipantDiscovered == 'function'
-          onParticipantDiscovered def, definitions
+        if data.protocol == 'discovery' and data.command == 'participant'
+          def = msg.data.payload
+          definitions.push def
+          state.broker.ackMessage msg
+          if typeof onParticipantDiscovered == 'function'
+            onParticipantDiscovered def, definitions
       state.broker.subscribeParticipantChange onDiscovery
 
       participant = startForeign state.commands, name, options, done
